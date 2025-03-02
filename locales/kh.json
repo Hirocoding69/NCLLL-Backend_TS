@@ -1,0 +1,26 @@
+{
+  "exception": {
+    "bad_request": "សំណើមមិនត្រឹមត្រូវ សូមពិនិត្យទិន្នន័យរបស់អ្នកហើយព្យាយាមម្តងទៀត",
+    "unauthorized": "មិនអនុញ្ញាតឲ្យចូល",
+    "forbidden": "មិនអនុញ្ញាតឲ្យចូល",
+    "not_found": "រកមិនឃើញ",
+    "unprocessible_entity": "Unprocessible entity",
+    "internal_server_error": "Internal server error"
+  },
+  "validation": {
+    "is_string": "{{attribute}} ត្រូវតែជាប្រភេទតួអក្សរ",
+    "is_number": "{{attribute}} ត្រូវតែជាប្រភេទលេខ",
+    "min_length": "{{attribute}} ត្រូវតែមានប្រវែងយ៉ាងហោច {{constraints}} តួអក្សរឡើង",
+    "is_in": "{{attribute}} ត្រូវតែជាមួយនឹងតួអក្សរក្នុង {{constraints}}",
+    "is_array": "{{attribute}} ត្រូវតែជាប្រភេទបញ្ជី",
+    "min": "{{attribute}} តិចបំផុត {{constraints}}"
+  },
+  "property": {
+    "name": "ឈ្មោះ",
+    "phone": "លេខទូរស័ព្ទ",
+    "username": "ឈ្មោះសម្រាប់ចូល",
+    "password": "ពាក្យសម្ងាត់"
+  },
+  "message": {
+  }
+}

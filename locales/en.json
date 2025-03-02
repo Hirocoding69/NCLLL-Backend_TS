@@ -1,0 +1,28 @@
+{
+  "exception": {
+    "bad_request": "Bad request",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Forbidden",
+    "not_found": "Not found",
+    "unprocessible_entity": "Unprocessible entity",
+    "internal_server_error": "Internal server error"
+  },
+  "validation": {
+    "is_string": "{{attribute}} must be a string",
+    "is_number": "{{attribute}} must be a number",
+    "min_length": "{{attribute}} must be at least {{constraints}} characters long",
+    "is_in": "{{attribute}} must be one of the following: {{constraints}}",
+    "is_array": "{{attribute}} must be an array",
+    "min": "{{attribute}} must be at least {{constraints}}"
+  },
+  "property": {
+    "name": "Name",
+    "phone": "Phone",
+    "username": "Username",
+    "password": "Password"
+  },
+  "message": {
+    "already_exists": "{{attribute}} already exists",
+    "goo_goo": "{{attribute}}"
+  }
+}
