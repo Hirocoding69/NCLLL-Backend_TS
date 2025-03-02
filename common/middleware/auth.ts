@@ -1,8 +1,6 @@
-import { db } from "~/database/mysql";
 import { Request, Response, NextFunction } from "express";
 import * as jwt from "jsonwebtoken";
 import { unauthorized } from "response";
-import { Account } from "~/app/entity/admin";
 
 export function authMiddleware() {
   return async function (req: Request, res: Response, next: NextFunction) {
@@ -29,17 +27,7 @@ export function authMiddleware() {
         return next(unauthorized());
       }
 
-      const currentUser = await db.getRepository(Account).findOne({
-        where: {
-          id: payload.id,
-        },
-      });
 
-      if (!currentUser) {
-        return next(unauthorized());
-      }
-
-      req.user = currentUser;
       next();
     } catch (err) {
       next(err); 

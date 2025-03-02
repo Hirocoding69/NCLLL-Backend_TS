@@ -9,8 +9,6 @@
   },
   "scripts": {
     "build": "rimraf ./dist && tsc",
-    "migration:run": "npx ts-node -r tsconfig-paths/register node_modules/typeorm/cli migration:run -d database/mysql/index.ts",
-    "migration:revert": "npx ts-node -r tsconfig-paths/register node_modules/typeorm/cli migration:revert -d database/mysql/index.ts",
     "start": "NODE_ENV=production node dist/main.js",
     "dev": "cross-env NODE_ENV=local node --watch -r ts-node/register/transpile-only -r tsconfig-paths/register main.ts",
     "test": "jest --coverage",
