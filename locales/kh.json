@@ -1,10 +1,10 @@
 {
   "exception": {
-    "bad_request": "សំណើមមិនត្រឹមត្រូវ សូមពិនិត្យទិន្នន័យរបស់អ្នកហើយព្យាយាមម្តងទៀត",
+    "bad_request": "សំណើរមិនត្រឹមត្រូវ សូមពិនិត្យទិន្នន័យរបស់អ្នកហើយព្យាយាមម្តងទៀត",
     "unauthorized": "មិនអនុញ្ញាតឲ្យចូល",
     "forbidden": "មិនអនុញ្ញាតឲ្យចូល",
     "not_found": "រកមិនឃើញ",
-    "unprocessible_entity": "Unprocessible entity",
+    "unprocessable_entity": "Unprocessable entity",
     "internal_server_error": "Internal server error"
   },
   "validation": {
@@ -22,5 +22,9 @@
     "password": "ពាក្យសម្ងាត់"
   },
   "message": {
+    "invalid_username_length": "ប្រវែងឈ្មោះអ្នកប្រើប្រាស់មិនត្រឹមត្រូវ",
+    "success": "ជោកជ័យ",
+    "invalid_username_password": "ឈ្មោះគណនី​ ឬលេខសម្ងាត់មិនត្រឹមត្រូវ",
+    "invalid_number": "សូមពិនិត្យមើលលេខ"
   }
 }

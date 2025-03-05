@@ -3,7 +3,7 @@ export function sleep(ms = 0) {
 }
 
 export function shuffle(array: any[]) {
-  var currentIndex = array.length,
+  let currentIndex = array.length,
     randomIndex;
 
   while (0 !== currentIndex) {
@@ -24,10 +24,10 @@ export function camelToSnake(str: string) {
 }
 
 export function randomString(length = Math.floor(Math.random() * 10)) {
-  var randomChars =
+  let randomChars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  var result = "";
-  for (var i = 0; i < length; i++) {
+  let result = "";
+  for (let i = 0; i < length; i++) {
     result += randomChars.charAt(
       Math.floor(Math.random() * randomChars.length)
     );
@@ -57,4 +57,15 @@ export function isDev() {
 
 export function isProduction() {
   return getAppEnv() === "production";
+}
+
+export function denormalizePrize(input: string): string[] {
+  return input
+    .replace(/([A-Z])/g, " $1")
+    .trim()
+    .split(" ");
+}
+
+export function isSqlDuplicateCode(code: string) {
+  return code === "23505";
 }

@@ -1,4 +1,4 @@
-import { createLogger, transports, format } from "winston";
+import { createLogger, format, transports } from "winston";
 import TransportStream from "winston-transport";
 // import WinstonCloudWatch from "winston-cloudwatch";
 import moment from "moment";

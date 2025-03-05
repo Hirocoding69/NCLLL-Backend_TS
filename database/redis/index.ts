@@ -1,6 +1,6 @@
 import Redis from "ioredis";
 import dotenv from "dotenv";
-import { unprocessibleEntity } from "~/common/response";
+import { unprocessableEntity } from "~/common/response";
 
 dotenv.config();
 
@@ -29,7 +29,7 @@ async function readWithLock(
   retryDelay: number = 500
 ) {
   if (!redis) {
-    throw unprocessibleEntity(
+    throw unprocessableEntity(
       "Redis client is not initialized. Call initialize() first."
     );
   }
@@ -56,7 +56,7 @@ async function readWithLock(
   if (lockAcquired) {
     return value;
   } else {
-    throw unprocessibleEntity(
+    throw unprocessableEntity(
       `Failed to acquire lock for key "${lockKey}" after ${maxRetries} retries.`
     );
   }

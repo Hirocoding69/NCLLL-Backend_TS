@@ -1,6 +1,5 @@
 import {
   LoginPayload,
-  RegisterPayload,
 } from "../dto/auth";
 import moment from 'moment-timezone';
 import { AdminModel } from "../entity/admin";
@@ -8,6 +7,7 @@ import { encrypt } from "~/common/helper/hash";
 import { JwtUtils } from "~/common/utils/jwt";
 import { notFound, unauthorized } from "~/common/response";
 import { compare } from "bcrypt";
+import { log } from "console";
 
 export class AuthService {
 
@@ -27,10 +27,12 @@ export class AuthService {
     }
   }
   async login(payload: LoginPayload) {
-    const admin = await AdminModel.findOne({ username: payload.username });
+    const admin = await AdminModel.findOne({ name: payload.username });
     if (!admin) {
       throw notFound('User not found');
     }
+    console.log(admin);
+    console.log(payload);
     const isValid = compare(payload.password, admin.password);
     if (!isValid) {
       throw unauthorized("message.invalid_username_password");

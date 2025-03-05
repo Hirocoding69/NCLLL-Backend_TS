@@ -7,7 +7,7 @@ import { authMiddleware } from "~/common/middleware/auth";
 const router = express.Router();
 
 router
-  .use("/a", authMiddleware(), AdminRoutes)
-  .use("/u", authMiddleware(), UserRoutes);
+  .use("/a", authMiddleware("admin"), AdminRoutes)
+  .use("/u", authMiddleware("app"), UserRoutes);
 
 export default router;

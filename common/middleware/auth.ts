@@ -1,41 +1,35 @@
 import { Request, Response, NextFunction } from "express";
 import * as jwt from "jsonwebtoken";
 import { unauthorized } from "response";
+import { IsNull, MoreThan } from "typeorm";
 
-export function authMiddleware() {
+export function authMiddleware(type: "app" | "admin") {
   return async function (req: Request, res: Response, next: NextFunction) {
-    try {
-      // Skip logic (e.g., for public routes)
-      if (shouldSkip(req.originalUrl)) {
-        return next();
-      }
-
-      // Retrieve the token from the Authorization header
-      const token = req.header("Authorization")?.replace("Bearer ", "")?.trim();
-
-      if (!token) {
-        return next(unauthorized());
-      }
-
-      let payload: jwt.JwtPayload;
-
-      try {
-        payload = jwt.verify(token, process.env.JWT_SECRET || "") as jwt.JwtPayload;
-      } catch (e: any) {
-        return next(unauthorized());
-      }
-
-
-      next();
-    } catch (err) {
-      next(err); 
+    if (shouldSkip(req.originalUrl)) {
+      return next();
     }
+
+    const token = req.header("Authorization")?.replace("Bearer ", "")?.trim();
+    if (!token) {
+      throw unauthorized();
+    }
+
+    let payload: jwt.JwtPayload;
+    try {
+      payload = jwt.verify(
+        token,
+        process.env.JWT_SECRET || ""
+      ) as jwt.JwtPayload;
+    } catch (e: any) {
+      throw unauthorized();
+    }
+
+    next();
   };
 }
 
-
 function shouldSkip(path: string) {
-  const basePaths = ["/auth/login"];
+  const basePaths = ["/auth/login", "/auth/seed"];
   const userPaths = ["/app-versions/latest", "/app-versions/check"];
   const pathsToCheck = [
     "/health-check",

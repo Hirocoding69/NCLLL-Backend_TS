@@ -1,6 +1,6 @@
 import express from "express";
-import { HealthCheckRoutes } from "./health-check";
 import { CacheRoutes } from "./cache";
+import { HealthCheckRoutes } from "./health-check";
 import V1Router from "./v1";
 
 const router = express.Router();

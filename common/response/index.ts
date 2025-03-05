@@ -18,11 +18,11 @@ export function badRequest(payload?: string | object | Array<any>) {
   throw error(400, "exception.bad_request", payload);
 }
 
-export function unprocessibleEntity(payload?: string | object | Array<any>) {
-  throw error(422, "exception.unprocessible_entity", payload);
+export function unprocessableEntity(payload?: string | object | Array<any>) {
+  throw error(422, "exception.unprocessable_entity", payload);
 }
 
-export function ok(payload?: string | object | Array<any>) {
+export function ok(payload?: number | string | object | Array<any>) {
   let message = "OK";
   let data: any = null;
   if (typeof payload === "string") {

@@ -1,9 +1,9 @@
 import { plainToInstance } from "class-transformer";
 import { error } from "console";
 import { Request, Response } from "express";
-import {  LoginPayload } from "~/app/dto/auth";
+import { LoginPayload } from "~/app/dto/auth";
 import { AuthService } from "~/app/service/auth";
-import { notFound, ok, unauthorized } from "~/common/response";
+import { forbidden, notFound, ok, unauthorized, unprocessableEntity } from "~/common/response";
 
 export class AuthController {
   private authService = new AuthService();
@@ -13,16 +13,14 @@ export class AuthController {
     try {
       const token = await this.authService.login(payload);
       return res.send(ok({ token }));
-    } catch (e:any) {
+    } catch (e: any) {
       return res.status(e.status || 500).send(error);
     }
   }
   async seedAdminAccount(req: Request, res: Response) {
-    try {
-      await this.authService.seedAdminAccount();
-      return res.send(ok());
-    } catch (e:any) {
-      return res.status(e.status || 500).send(error);
-    }
+    const token = req.header("Authorization")?.replace("Bearer ", "")?.trim();
+    if (token !== process.env.SEED_KEY) throw unprocessableEntity();
+    await this.authService.seedAdminAccount();
+    return res.send(ok());
   }
 }

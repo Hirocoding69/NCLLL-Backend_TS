@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { isEmpty } from "lodash";
+import logger from "../utils/logger";
 
 export function errorHandler(
   err: any,
@@ -24,7 +25,7 @@ export function errorHandler(
   if (code && !isNaN(code) && code >= 300 && code < 500) {
     res.status(err.code);
   } else {
-    console.error(err);
+    logger.error(err);
     return res.status(500).send({
       code: 500,
       message: req.t

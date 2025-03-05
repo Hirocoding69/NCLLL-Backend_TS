@@ -7,7 +7,10 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "strictPropertyInitialization": false,
-    "lib": ["es5", "es6"],
+    "lib": [
+      "es5",
+      "es6"
+    ],
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -15,14 +18,25 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "~/*": ["./*"],
-      "response": ["./common/response"]
+      "~/*": [
+        "./*"
+      ],
+      "response": [
+        "./common/response"
+      ]
     }
   },
   "ts-node": {
     "files": true
   },
-  "files": ["global/custom.d.ts"],
-  "include": ["**/*.ts"],
-  "exclude": ["node_modules", "dist"]
+  "files": [
+    "global/custom.d.ts"
+  ],
+  "include": [
+    "**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

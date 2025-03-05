@@ -1,4 +1,4 @@
-import { IsEmail, IsString, MinLength } from "class-validator";
+import { IsString, MinLength } from "class-validator";
 
 /* ------------------------------------------------------ */
 /*                         Payload                        */
@@ -11,32 +11,16 @@ export class LoginPayload {
   @IsString()
   password: string;
 
-  ip?: string;
+  platform: string;
 }
 
-export class RegisterPayload {
+export class ChangePasswordPayload {
   @IsString()
-  username: string;
+  @MinLength(4)
+  old_password: string;
 
   @IsString()
-  password: string;
-
-  @IsString()
-  confirmPassword: string;
-
-  @IsString()
-  secPassword: string;
-
-  @IsString()
-  confirmSecPassword: string;
-
-  @IsString()
-  @IsEmail()
-  email: string;
-
-  @IsString()
-  phone: string;
-
-  ip?: string;
+  @MinLength(4)
+  new_password: string;
 
 }
