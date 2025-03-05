@@ -66,16 +66,13 @@ async function main() {
     });
   } catch (error) {
     logger.error("Error in server startup:", error);
-    // Add delay to prevent immediate restart
     await new Promise(resolve => setTimeout(resolve, 5000));
     process.exit(1);
   }
 }
 
-// Run with global error handling
 process.on('uncaughtException', (error) => {
   logger.error('Uncaught Exception:', error);
-  // Prevent immediate restart
   setTimeout(() => {
     process.exit(1);
   }, 5000);
@@ -83,7 +80,6 @@ process.on('uncaughtException', (error) => {
 
 process.on('unhandledRejection', (reason, promise) => {
   logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
-  // We don't exit here to allow the application to continue running
 });
 
 main().catch(error => {

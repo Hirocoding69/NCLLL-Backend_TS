@@ -6,6 +6,8 @@ const router = express.Router();
 const ctrl = bindCtx(new AuthController());
 
 router
-  .get("/me", ()=>{console.log("test")});
+  .get("/me", ()=>{console.log("test")})
+  .post("/login", ctrl.login)
+  .post("/seed", ctrl.seedAdminAccount);
 
 export default router;

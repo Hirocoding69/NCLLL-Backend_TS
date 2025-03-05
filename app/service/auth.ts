@@ -5,11 +5,11 @@ import {
 import moment from 'moment-timezone';
 import { AdminModel } from "../entity/admin";
 import { encrypt } from "~/common/helper/hash";
-
+import { JwtUtils } from "~/common/utils/jwt";
+import { notFound, unauthorized } from "~/common/response";
+import { compare } from "bcrypt";
 
 export class AuthService {
-  constructor() {
-  }
 
   async seedAdminAccount() {
     let existingAdmin = await AdminModel.findOne({ name: 'admin' });
@@ -27,7 +27,16 @@ export class AuthService {
     }
   }
   async login(payload: LoginPayload) {
-    const token = '';
+    const admin = await AdminModel.findOne({ username: payload.username });
+    if (!admin) {
+      throw notFound('User not found');
+    }
+    const isValid = compare(payload.password, admin.password);
+    if (!isValid) {
+      throw unauthorized("message.invalid_username_password");
+    }
+    const token = JwtUtils.sign({ userId: admin.id });
+    
     return token;
   }
 

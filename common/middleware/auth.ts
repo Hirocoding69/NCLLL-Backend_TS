@@ -13,8 +13,6 @@ export function authMiddleware() {
       // Retrieve the token from the Authorization header
       const token = req.header("Authorization")?.replace("Bearer ", "")?.trim();
 
-      console.log(token);
-
       if (!token) {
         return next(unauthorized());
       }
@@ -37,7 +35,7 @@ export function authMiddleware() {
 
 
 function shouldSkip(path: string) {
-  const basePaths = ["/auth/login", "/auth/refresh-token", "/auth/register", "/accounts/find", "/auth/check-secpassword", "/auth/recover-password"];
+  const basePaths = ["/auth/login"];
   const userPaths = ["/app-versions/latest", "/app-versions/check"];
   const pathsToCheck = [
     "/health-check",
