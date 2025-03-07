@@ -1,36 +1,14 @@
-import { Exclude } from "class-transformer";
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
-} from "typeorm";
+import { prop } from '@typegoose/typegoose';
 
-@Entity()
 export class BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @CreateDateColumn()
+  @prop({ required: true, default: () => new Date() })
   created_at: Date;
 
-  @UpdateDateColumn()
+  @prop({ required: true, default: () => new Date() })
   updated_at: Date;
 }
 
-@Entity()
-export class BaseSoftDeleteEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @CreateDateColumn()
-  created_at: Date;
-
-  @UpdateDateColumn()
-  updated_at: Date;
-
-  @Exclude()
-  @DeleteDateColumn({ select: false })
-  deleted_at: Date;
+export class BaseSoftDeleteEntity extends BaseEntity {
+  @prop({ required: false, default: null })
+  deleted_at: Date | null;
 }

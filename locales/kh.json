@@ -25,6 +25,7 @@
     "invalid_username_length": "ប្រវែងឈ្មោះអ្នកប្រើប្រាស់មិនត្រឹមត្រូវ",
     "success": "ជោកជ័យ",
     "invalid_username_password": "ឈ្មោះគណនី​ ឬលេខសម្ងាត់មិនត្រឹមត្រូវ",
-    "invalid_number": "សូមពិនិត្យមើលលេខ"
+    "invalid_number": "សូមពិនិត្យមើលលេខ",
+    "not_found": "រកមិនឃើញ"
   }
 }
