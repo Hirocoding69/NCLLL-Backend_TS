@@ -31,8 +31,6 @@ export class AuthService {
     if (!admin) {
       throw notFound('User not found');
     }
-    console.log(admin);
-    console.log(payload);
     const isValid = compare(payload.password, admin.password);
     if (!isValid) {
       throw unauthorized("message.invalid_username_password");

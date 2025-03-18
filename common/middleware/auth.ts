@@ -23,7 +23,6 @@ export function authMiddleware(type: "app" | "admin") {
     } catch (e: any) {
       throw unauthorized();
     }
-
     next();
   };
 }

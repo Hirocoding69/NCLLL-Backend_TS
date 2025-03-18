@@ -25,26 +25,7 @@ export class MemberService {
     }
     if (en) member.en = { ...member.en, ...en };
     if (kh) member.kh = { ...member.kh, ...kh };
-    member.updated_at = new Date();
     return await member.save();
   }
 
-  async softDeleteMember(id: string) {
-    const member = await MemberModel.findById(id);
-    if (!member) {
-      throw notFound("Member not found");
-    }
-    member.deleted_at = new Date();
-    return await member.save();
-  }
-
-  async restoreMember(id: string) {
-    const member = await MemberModel.findOne({ _id: id, deleted_at: { $ne: null } });
-    if (!member) {
-      throw notFound("Member not found or not deleted");
-    }
-    member.deleted_at = null;
-    member.updated_at = new Date();
-    return await member.save();
-  }
 }

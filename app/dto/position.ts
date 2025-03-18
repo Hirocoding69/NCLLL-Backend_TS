@@ -1,14 +1,34 @@
+import { IsInt, IsMongoId, IsNotEmpty, IsObject, IsString, ValidateNested } from "class-validator";
+import { Type } from "class-transformer";
 
-import { IsString, MinLength } from "class-validator";
+/* ------------------------------------------------------ */
+/*                    Nested Classes                      */
+/* ------------------------------------------------------ */
+export class PositionInfoDto {
+  @IsString()
+  @IsNotEmpty()
+  title: string;
+
+  @IsInt()
+  level: number;
+}
 
 /* ------------------------------------------------------ */
 /*                         Payload                        */
 /* ------------------------------------------------------ */
-
 export class CreatePositionPayload {
-  @IsString()
-  title: string;
+  @IsObject()
+  @ValidateNested()
+  @Type(() => PositionInfoDto)
+  en: PositionInfoDto;
 
-  @IsString()
-  level: string;
+  @IsObject()
+  @ValidateNested()
+  @Type(() => PositionInfoDto)
+  kh: PositionInfoDto;
+}
+
+export class EditPositionPayload extends CreatePositionPayload{
+  @IsMongoId()
+  id: string;
 }

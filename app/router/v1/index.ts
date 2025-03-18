@@ -8,6 +8,6 @@ const router = express.Router();
 
 router
   .use("/a", authMiddleware("admin"), AdminRoutes)
-  .use("/u", authMiddleware("app"), UserRoutes);
+  .use("/u", UserRoutes);
 
 export default router;

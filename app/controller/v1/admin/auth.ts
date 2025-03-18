@@ -10,12 +10,8 @@ export class AuthController {
 
   async login(req: Request, res: Response) {
     const payload = plainToInstance(LoginPayload, req.body);
-    try {
-      const token = await this.authService.login(payload);
-      return res.send(ok({ token }));
-    } catch (e: any) {
-      return res.status(e.status || 500).send(error);
-    }
+    const token = await this.authService.login(payload);
+    return res.send(ok({ token }));
   }
   async seedAdminAccount(req: Request, res: Response) {
     const token = req.header("Authorization")?.replace("Bearer ", "")?.trim();

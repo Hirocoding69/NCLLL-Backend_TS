@@ -10,7 +10,6 @@ export function vbody<T>(type: new () => T) {
     const errors = await validate(sanitized);
 
     if (!errors?.length) return next();
-
     throw badRequest({
       vld_errors: getValidationError(type, errors, req),
     });

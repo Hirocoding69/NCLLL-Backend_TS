@@ -1,19 +1,32 @@
-import mongoose from "mongoose";
-import dotenv from "dotenv";
 
-dotenv.config();
+import mongoose from 'mongoose';
 
-const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/mydatabase";
+let connection: typeof mongoose | null = null;
 
-export const connectDB = async () => {
-  try {
-    await mongoose.connect(MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    } as mongoose.ConnectOptions);
-    console.log("✅ MongoDB Connected");
-  } catch (error) {
-    console.error("❌ MongoDB Connection Error:", error);
-    process.exit(1);
+export async function connectDB() {
+  if (connection) {
+    console.info("Reusing existing MongoDB connection");
+    return connection;
   }
-};
+  
+  try {
+    const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/yourdb';
+    connection = await mongoose.connect(mongoURI, {
+      // These options may vary depending on your mongoose version
+      // but include appropriate connection pooling settings
+    });
+    
+    console.info("MongoDB connected successfully");
+    
+    // Handle disconnection events
+    mongoose.connection.on('disconnected', () => {
+      console.warn('MongoDB disconnected');
+      connection = null;
+    });
+    
+    return connection;
+  } catch (error) {
+    console.error('MongoDB connection error:', error);
+    throw error;
+  }
+}
