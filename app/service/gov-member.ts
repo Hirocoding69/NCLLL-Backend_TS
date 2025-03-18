@@ -31,11 +31,11 @@ export class MemberService {
    */
   async getAllMembers(populate = true) {
     const query = MemberModel.find({ deleted_at: null });
-    
+
     if (populate) {
       query.populate('position');
     }
-    
+
     return await query.sort({ 'created_at': -1 }).exec();
   }
 
@@ -50,21 +50,21 @@ export class MemberService {
       throw notFound("Invalid member ID format");
     }
 
-    const query = MemberModel.findOne({ 
-      _id: id, 
-      deleted_at: null 
+    const query = MemberModel.findOne({
+      _id: id,
+      deleted_at: null
     });
-    
+
     if (populate) {
       query.populate('position');
     }
-    
+
     const member = await query.exec();
-    
+
     if (!member) {
       throw notFound("Member not found");
     }
-    
+
     return member;
   }
 
@@ -75,17 +75,17 @@ export class MemberService {
    */
   async updateMember(payload: EditMemberPayload) {
     const { id, position, ...updateData } = payload;
-    
+
     if (!Types.ObjectId.isValid(id)) {
       throw notFound("Invalid member ID format");
     }
 
     // Verify member exists
-    const member = await MemberModel.findOne({ 
-      _id: id, 
-      deleted_at: null 
+    const member = await MemberModel.findOne({
+      _id: id,
+      deleted_at: null
     });
-    
+
     if (!member) {
       throw notFound("Member not found");
     }
@@ -99,22 +99,33 @@ export class MemberService {
       member.position = position as any;
     }
 
-   // Update member info
-   if (updateData.en) {
-    member.en = {
-      ...(member.en as any),
-      ...updateData.en
-    };
-  }
-  
-  if (updateData.kh) {
-    member.kh = {
-      ...(member.kh as any),
-      ...updateData.kh
-    };
-  }
+    // Update member info
+    if (updateData.en) {
+      member.en = {
+        ...(member.en as any),
+        ...updateData.en
+      };
+    }
+
+    if (updateData.kh) {
+      member.kh = {
+        ...(member.kh as any),
+        ...updateData.kh
+      };
+    }
 
     return await member.save();
   }
 
+  /**
+   * Delete a member by ID
+   * @param id Member ID
+   * @returns Deleted member
+   */
+  async deleteMember(id: string) {
+    if (!Types.ObjectId.isValid(id)) {
+      throw notFound("Invalid member ID format");
+    }
+    await MemberModel.findByIdAndDelete(id);
+  }
 }
