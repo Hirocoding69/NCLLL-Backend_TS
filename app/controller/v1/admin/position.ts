@@ -30,7 +30,7 @@ export class PositionController {
     return res.send(ok(position));
   }
 
-  async softDelete(req: Request, res: Response) {
+  async delete(req: Request, res: Response) {
     const id = req.params.id;
     await this.positionService.delete(id);
     return res.send(ok());

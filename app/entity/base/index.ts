@@ -8,7 +8,7 @@ export class BaseEntity {
   updated_at: Date;
 }
 
-export class BaseSoftDeleteEntity extends BaseEntity {
+export class BasedeleteEntity extends BaseEntity {
   @prop({ required: false, default: null })
   deleted_at: Date | null;
 }
