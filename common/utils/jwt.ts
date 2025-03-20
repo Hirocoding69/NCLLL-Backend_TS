@@ -3,7 +3,7 @@ import jwt, { SignOptions } from "jsonwebtoken";
 type JwtPayload = jwt.JwtPayload & { userId: string };
 
 export class JwtUtils {
-  static sign(payload: object, expiresIn: number | string = "1h"): string {
+  static sign(payload: object, expiresIn: number | string = "1d"): string {
     const options: SignOptions = { expiresIn: expiresIn as number | undefined };
     return jwt.sign(payload, process.env.JWT_SECRET || "", options);
   }
