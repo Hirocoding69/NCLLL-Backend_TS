@@ -8,14 +8,14 @@
     "response": "dist/common/response"
   },
   "scripts": {
-    "build": "rm -rf ./dist && tsc",
+    "build": "rmdir /s /q ./dist && tsc",
     "start": "NODE_ENV=production node dist/main.js",
     "dev": "cross-env NODE_ENV=local nodemon -r ts-node/register/transpile-only -r tsconfig-paths/register main.ts",
     "test": "jest --coverage",
     "seed:run": "ts-node -r tsconfig-paths/register --project ./tsconfig.json ./node_modules/typeorm-seeding/dist/cli.js --n ./database/postgres/seed.ts seed"
   },
   "keywords": [],
-  "author": "Chheung",
+  "author": "Sambo",
   "license": "ISC",
   "devDependencies": {
     "@types/axios": "^0.14.0",
