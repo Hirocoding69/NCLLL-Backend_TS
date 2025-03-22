@@ -8,7 +8,7 @@
     "response": "dist/common/response"
   },
   "scripts": {
-    "build": "rmdir /s /q ./dist && tsc",
+    "build": "rm -rf ./dist && tsc",
     "start": "NODE_ENV=production node dist/main.js",
     "dev": "cross-env NODE_ENV=local nodemon -r ts-node/register/transpile-only -r tsconfig-paths/register main.ts",
     "test": "jest --coverage",
