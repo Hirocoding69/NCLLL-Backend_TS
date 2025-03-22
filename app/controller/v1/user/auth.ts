@@ -1,6 +1,5 @@
 import {
   LoginPayload,
-  RegisterPayload,
 } from "~/app/dto/auth";
 import { AuthService } from "~/app/service/auth";
 import { plainToClass, plainToInstance } from "class-transformer";
