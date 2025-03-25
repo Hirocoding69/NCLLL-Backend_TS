@@ -12,8 +12,6 @@ export async function connectDB() {
   try {
     const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/yourdb';
     connection = await mongoose.connect(mongoURI, {
-      // These options may vary depending on your mongoose version
-      // but include appropriate connection pooling settings
     });
     
     console.info("MongoDB connected successfully");

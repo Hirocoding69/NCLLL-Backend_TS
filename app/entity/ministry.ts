@@ -11,7 +11,7 @@ class MinistryInfo {
 
 @index({ "en.name": 1 }, { unique: true })
 @index({ "kh.name": 1 }, { unique: true })
-class Ministry {
+export class Ministry {
   @prop({ required: true, type: () => MinistryInfo }) 
   en: MinistryInfo;
   

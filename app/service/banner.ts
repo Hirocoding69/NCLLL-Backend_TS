@@ -88,18 +88,5 @@ export class BannerService {
       throw notFound("Invalid banner ID format");
     }
     await BannerModel.findOneAndDelete({ _id: id });
-    // const banner = await BannerModel.findOne({ 
-    //   _id: id, 
-    //   deleted_at: null 
-    // });
-    
-    // if (!banner) {
-    //   throw notFound("Banner not found");
-    // }
-    
-    // banner.deleted_at = new Date();
-    // banner.updated_at = new Date();
-    
-    // return await banner.save();
   }
 }

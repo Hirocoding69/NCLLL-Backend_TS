@@ -7,6 +7,8 @@ import SponssorRoutes from "./sponsor";
 import BannerRoutes from "./banner";
 import TagRoutes from "./tag";
 import MinistryRoutes from "./ministry";
+import UploadRoutes from "./file";
+import ResoureceRoutes from "./resource";
 const router = express.Router();
 
 router
@@ -16,6 +18,9 @@ router
   .use("/sponsor", SponssorRoutes)
   .use("/banner", BannerRoutes)
   .use("/tag", TagRoutes)
-  .use("/ministry", MinistryRoutes);
+  .use("/ministry", MinistryRoutes)
+  .use("/upload",UploadRoutes)
+  .use("/resource",ResoureceRoutes);
+
  
 export default router;

@@ -1,7 +1,8 @@
 import { ObjectLiteral, SelectQueryBuilder } from "typeorm";
+import { Model, Document, PopulateOptions } from "mongoose";
 
 /* ------------------------------------------------------ */
-/*                    Normal pagination                   */
+/*                    Normal Pagination                   */
 /* ------------------------------------------------------ */
 
 export interface PaginationOptions {
@@ -12,15 +13,18 @@ export interface PaginationOptions {
   allowed_order?: string[];
 }
 
+export interface PaginationMeta {
+  items_per_page: number;
+  current_page: number;
+  total_pages: number;
+  total_count: number;
+}
+
 export interface PaginationResult<T> {
-  meta: {
-    items_per_page: number;
-    current_page: number;
-    total_pages: number;
-    total_count: number;
-  };
+  meta: PaginationMeta;
   results: T[];
 }
+
 export async function paginate<T extends ObjectLiteral>(
   qb: SelectQueryBuilder<T>,
   options: PaginationOptions
@@ -34,19 +38,21 @@ export async function paginate<T extends ObjectLiteral>(
   } = options;
   const offset = (page - 1) * limit;
 
+  // Set default order field
   let orderByField = `${qb.alias}.id`;
+
   if (order_by) {
     const [field, order] = order_by.split(" ");
-    if (order !== "ASC" && order !== "DESC") {
-      throw "invalid sort value. must be asc or desc";
+    if (!["ASC", "DESC"].includes(order.toUpperCase())) {
+      throw new Error("Invalid sort value. Must be ASC or DESC");
     }
 
-    if (allowed_order && !allowed_order.includes(field)) {
-      throw "invalid sort field";
+    if (!allowed_order.includes(field)) {
+      throw new Error("Invalid sort field");
     }
 
     orderByField = `${order_by_alias || qb.alias}.${field}`;
-    qb.orderBy(orderByField, order);
+    qb.orderBy(orderByField, order.toUpperCase() as "ASC" | "DESC");
   } else {
     qb.orderBy(orderByField, "DESC");
   }
@@ -56,120 +62,92 @@ export async function paginate<T extends ObjectLiteral>(
     qb
       .clone()
       .select(`COUNT(DISTINCT(${qb.alias}.id))`, "count")
-      .orderBy()
-      .groupBy()
       .getRawOne()
-      .then((res) => +res.count),
+      .then((res) => +res?.count || 0),
   ]);
 
-  return {
-    results: results,
-    meta: {
-      items_per_page: limit,
-      current_page: page,
-      total_count: +totalCount || 0,
-      total_pages: Math.ceil(totalCount / limit) || 1,
-    },
-  };
-}
-
-/* ------------------------------------------------------ */
-/*                Raw Pagination Function                 */
-/* ------------------------------------------------------ */
-
-export interface RawPaginationOptions<T = any> {
-  page: number;
-  limit: number;
-  distinct_by?: string;
-  count_all?: boolean;
-  mapper?: (raw: any) => T;
-}
-
-export async function paginateRaw<T = any>(
-  qb: SelectQueryBuilder<any>,
-  options: RawPaginationOptions<T>
-): Promise<PaginationResult<T>> {
-  const { page, limit, mapper, count_all, distinct_by } = options;
-  const offset = (page - 1) * limit;
-
-  const [rawResults, totalCount] = await Promise.all([
-    qb.clone().limit(limit).offset(offset).getRawMany(),
-    qb
-      .clone()
-      .select(
-        count_all
-          ? "COUNT(*)"
-          : distinct_by
-          ? `COUNT(DISTINCT(${distinct_by}))`
-          : `COUNT(DISTINCT(${qb.alias}.id))`,
-        "count"
-      )
-      .orderBy()
-      .groupBy()
-      .getRawOne()
-      .then((res) => +res?.count),
-  ]);
-
-  const results = mapper ? rawResults.map(mapper) : rawResults;
   return {
     results,
     meta: {
       items_per_page: limit,
       current_page: page,
-      total_count: totalCount || 0,
-      total_pages: Math.ceil(totalCount / limit) || 1,
+      total_count: totalCount,
+      total_pages: Math.max(Math.ceil(totalCount / limit), 1),
     },
   };
 }
 
 /* ------------------------------------------------------ */
-/*                    Cursor Pagination                   */
+/*                MongoDB Pagination                      */
 /* ------------------------------------------------------ */
-
-export interface CursorPaginationOptions {
-  last: number;
+export interface MongoPaginationOptions {
+  page: number;
   limit: number;
   order_by?: string;
+  allowed_order?: string[];
+  filter?: Record<string, any>;
+  populate?: any; 
 }
 
-export interface CursorPaginationResult<T> {
-  meta: {
-    has_next: boolean;
-  };
+export interface PaginationMeta {
+  items_per_page: number;
+  current_page: number;
+  total_pages: number;
+  total_count: number;
+}
+
+export interface PaginationResult<T> {
+  meta: PaginationMeta;
   results: T[];
 }
 
-export async function cursorPaginate<T extends ObjectLiteral>(
-  qb: SelectQueryBuilder<T>,
-  options: CursorPaginationOptions
-): Promise<CursorPaginationResult<T>> {
-  const { last, limit, order_by } = options;
-
-  if (order_by !== "ASC" && order_by !== "DESC") {
-    throw "invalid sort value. must be asc or desc";
+export async function mongoPaginate<T>(
+  model: Model<any>,
+  options: MongoPaginationOptions
+): Promise<PaginationResult<T>> {
+  const {
+    page = 1,
+    limit = 10,
+    order_by,
+    allowed_order = ["_id", "created_at"],
+    filter = {},
+    populate,
+  } = options;
+  const offset = (page - 1) * limit;
+  
+  // Default sorting
+  let sortObj: Record<string, 1 | -1> = { _id: -1 };
+  if (order_by) {
+    const [field, order] = order_by.split(" ");
+    if (!["ASC", "DESC", "asc", "desc"].includes(order)) {
+      throw new Error("Invalid sort value. Must be ASC or DESC");
+    }
+    if (!allowed_order.includes(field)) {
+      throw new Error("Invalid sort field");
+    }
+    sortObj = { [field]: order.toUpperCase() === "ASC" ? 1 : -1 };
   }
-
-  if (last > 0) {
-    qb.andWhere(`${qb.alias}.id ${order_by === "ASC" ? ">" : "<"} :last`, {
-      last,
-    });
+  
+  // Query with pagination
+  let query = model.find(filter).sort(sortObj).skip(offset).limit(limit);
+  
+  if (populate) {
+    query = query.populate(populate as any);
   }
-
-  const results = await qb
-    .orderBy(`${qb.alias}.id`, order_by as "ASC" | "DESC")
-    .groupBy(`${qb.alias}.id`)
-    .limit(limit + 1)
-    .getMany();
-
-  const hasNext = results.length > limit;
-  if (hasNext) {
-    results.pop();
-  }
-
+  
+  // Execute query and count in parallel
+  const [results, totalCount] = await Promise.all([
+    query.exec(),
+    model.countDocuments(filter),
+  ]);
+  
   return {
+    results: results as T[],
     meta: {
-      has_next: hasNext,
+      items_per_page: limit,
+      current_page: page,
+      total_count: totalCount,
+      total_pages: Math.max(Math.ceil(totalCount / limit), 1),
     },
-    results,
   };
 }
