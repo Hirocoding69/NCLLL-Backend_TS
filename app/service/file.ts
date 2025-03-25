@@ -13,16 +13,12 @@ export class FileService {
   private s3: S3;
 
   constructor() {
-    // Get region and credentials from environment variables
     const REGION = process.env.AWS_REGION || "sgp1"; // Default to sgp1 for Singapore
     const ACCESS_KEY = process.env.AWS_ACCESS_KEY_ID || "";
     const SECRET_KEY = process.env.AWS_SECRET_ACCESS_KEY || "";
     
-    // IMPORTANT FIX: Use correct endpoint format for Digital Ocean Spaces
-    // DO NOT include the bucket name in the endpoint
     const SPACES_ENDPOINT = `https://${REGION}.digitaloceanspaces.com`;
 
-    // Configure S3 client for Digital Ocean Spaces
     this.s3 = new S3({
       endpoint: SPACES_ENDPOINT,
       region: REGION,
@@ -100,8 +96,6 @@ export class FileService {
       const result = await this.s3.upload(params).promise();
       logger.info(`[uploadFile] File uploaded successfully, location: ${result.Location}`);
       
-      // Construct URL correctly for Digital Ocean Spaces
-      // Format: https://{bucket}.{region}.digitaloceanspaces.com/{key}
       const region = process.env.AWS_REGION || "sgp1";
       const fileUrl = `https://${bucket}.${region}.digitaloceanspaces.com/${key}`;
       
