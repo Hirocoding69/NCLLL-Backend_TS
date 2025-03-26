@@ -6,7 +6,7 @@ class MinistryInfo {
   name: string;
 
   @prop({ required: true }) 
-  lang: string;
+  imageUrl: string;
 }
 
 @index({ "en.name": 1 }, { unique: true })

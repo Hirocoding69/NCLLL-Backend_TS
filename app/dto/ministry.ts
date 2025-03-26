@@ -11,7 +11,7 @@ export class MinistryInfoDto {
   
   @IsString()
   @IsNotEmpty()
-  lang: string;
+  imageUrl: string;
 }
 
 /* ------------------------------------------------------ */

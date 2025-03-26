@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { notFound } from "~/common/response";
+import { notFound, unprocessableEntity } from "~/common/response";
 import { MinistryInfo, MinistryModel } from "../entity/ministry";
 import { CreateMinistryPayload, EditMinistryPayload } from '../dto/ministry';
 
@@ -9,14 +9,25 @@ export class MinistryService {
    * @param payload Ministry creation data
    * @returns Newly created ministry
    */
-  async createMinistry(payload: CreateMinistryPayload) {
-    return await MinistryModel.create({
-      en: payload.en,
-      kh: payload.kh,
-      created_at: new Date(),
-      updated_at: new Date()
-    });
+ async createMinistry(payload: CreateMinistryPayload) {
+  const existingMinistry = await MinistryModel.findOne({
+    $or: [
+      { "en.name": payload.en.name },
+      { "kh.name": payload.kh.name }
+    ]
+  });
+
+  if (existingMinistry) {
+    throw unprocessableEntity("message.ministry_already_exists");
   }
+
+  return await MinistryModel.create({
+    en: payload.en,
+    kh: payload.kh,
+    created_at: new Date(),
+    updated_at: new Date()
+  });
+}
 
   /**
    * Get all ministries
