@@ -37,6 +37,7 @@ export class ResourceService {
       type,
       lang,
       year,
+      keyword,
       source,
       sortBy = 'publishedAt',
       sortOrder = 'desc'
@@ -47,6 +48,10 @@ export class ResourceService {
     if (type) filter.type = type;
     if (lang) filter.lang = lang;
     if (source) filter.source = source;
+
+    if (keyword) {
+      filter.title = { $regex: keyword, $options: 'i' };
+    }
 
     if (year) {
       const startDate = new Date(year, 0, 1);

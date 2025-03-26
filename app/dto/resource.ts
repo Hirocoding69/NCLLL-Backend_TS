@@ -59,4 +59,8 @@ export class ResourceQueryDto extends BasePaginationQuery {
   @IsMongoId()
   @IsOptional()
   source?: string;
+  
+  @IsString()
+  @IsOptional()
+  keyword?: string;
 }
