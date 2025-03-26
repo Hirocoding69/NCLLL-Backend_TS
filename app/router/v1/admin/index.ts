@@ -9,6 +9,7 @@ import TagRoutes from "./tag";
 import MinistryRoutes from "./ministry";
 import UploadRoutes from "./file";
 import ResoureceRoutes from "./resource";
+import BlogRoutes from "./blog";
 const router = express.Router();
 
 router
@@ -20,7 +21,8 @@ router
   .use("/tag", TagRoutes)
   .use("/ministry", MinistryRoutes)
   .use("/upload",UploadRoutes)
-  .use("/resource",ResoureceRoutes);
+  .use("/resource",ResoureceRoutes)
+  .use("/blog", BlogRoutes);
 
  
 export default router;
