@@ -48,7 +48,6 @@ export class ResourceService {
     if (lang) filter.lang = lang;
     if (source) filter.source = source;
 
-    // If year is provided, filter by date range
     if (year) {
       const startDate = new Date(year, 0, 1);
       const endDate = new Date(year, 11, 31, 23, 59, 59, 999);
@@ -59,10 +58,8 @@ export class ResourceService {
       };
     }
 
-    // Create order_by string from sortBy and sortOrder
     const order_by = `${sortBy} ${sortOrder.toUpperCase()}`;
 
-    // List of allowed sort fields
     const allowed_order = ['publishedAt', 'title', 'created_at', 'type', 'lang'];
 
     const paginationOptions: MongoPaginationOptions = {
@@ -118,6 +115,7 @@ export class ResourceService {
       throw notFound("Resource not found");
     }
 
+    // Update fields
     Object.assign(resource, {
       ...updateData,
       publishedAt: new Date(updateData.publishedAt),

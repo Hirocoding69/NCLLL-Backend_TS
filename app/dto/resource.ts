@@ -56,7 +56,7 @@ export class ResourceQueryDto extends BasePaginationQuery {
   @Type(() => Number)
   year?: number;
 
-  @IsString()
+  @IsMongoId()
   @IsOptional()
   source?: string;
 }
