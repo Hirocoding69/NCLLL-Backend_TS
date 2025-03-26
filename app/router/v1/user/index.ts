@@ -12,6 +12,6 @@ router
     .use('/ministries', MinistryRoutes)
     .use('/tags', TagRoutes)
     .use('/banners', BannerRoutes)
-    .use('/resourcec', ResourceRoutes);
+    .use('/resource', ResourceRoutes);
 
 export default router;
