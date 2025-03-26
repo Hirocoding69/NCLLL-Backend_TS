@@ -62,11 +62,6 @@ export class MemberInfoDto {
   @Type(() => AddressDto)
   placeOfBirth: AddressDto;
 
-  @IsObject()
-  @ValidateNested()
-  @Type(() => AddressDto)
-  currentAddress: AddressDto;
-
   @IsArray()
   @IsOptional()
   @ValidateNested({ each: true })

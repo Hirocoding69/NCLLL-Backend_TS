@@ -32,7 +32,6 @@ export class MemberInfo {
   @prop({ required: true }) nationality: string;
   @prop({ required: true }) name: string;
   @prop({ required: true, type: () => Address }) placeOfBirth: Address;
-  @prop({ required: true, type: () => Address }) currentAddress: Address;
   @prop({ type: () => [CareerDetail] }) careerStatus: CareerDetail[];
   @prop({ type: () => [CareerDetail] }) experience: CareerDetail[];
 }
