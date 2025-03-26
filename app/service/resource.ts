@@ -12,7 +12,6 @@ export class ResourceService {
    * @returns Newly created resource
    */
   async createResource(payload: CreateResourcePayload) {
-    // Verify ministry exists
     const ministryExists = await MinistryModel.exists({ _id: payload.source });
     if (!ministryExists) {
       throw notFound("Source ministry not found");
@@ -43,7 +42,6 @@ export class ResourceService {
       sortOrder = 'desc'
     } = queryDto;
 
-    // Build filter object
     const filter: any = {};
 
     if (type) filter.type = type;
@@ -67,7 +65,6 @@ export class ResourceService {
     // List of allowed sort fields
     const allowed_order = ['publishedAt', 'title', 'created_at', 'type', 'lang'];
 
-    // Configure pagination options
     const paginationOptions: MongoPaginationOptions = {
       page,
       limit,
@@ -77,7 +74,6 @@ export class ResourceService {
       populate: 'source'
     };
 
-    // Execute paginated query
     return await mongoPaginate(ResourceModel, paginationOptions);
   }
   /**
@@ -111,7 +107,6 @@ export class ResourceService {
       throw notFound("Invalid resource ID format");
     }
 
-    // Verify ministry exists
     const ministryExists = await MinistryModel.exists({ _id: updateData.source });
     if (!ministryExists) {
       throw notFound("Source ministry not found");
@@ -123,7 +118,6 @@ export class ResourceService {
       throw notFound("Resource not found");
     }
 
-    // Update fields
     Object.assign(resource, {
       ...updateData,
       publishedAt: new Date(updateData.publishedAt),
