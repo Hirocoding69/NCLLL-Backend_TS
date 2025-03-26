@@ -15,13 +15,15 @@ export class MemberService {
       throw notFound("Position not found");
     }
 
-    return await MemberModel.create({
+    const member = await MemberModel.create({
       en: payload.en,
       kh: payload.kh,
       position: payload.position,
       created_at: new Date(),
       updated_at: new Date()
     });
+
+    return await member.populate("position");
   }
 
   /**
@@ -114,7 +116,7 @@ export class MemberService {
       };
     }
 
-    return await member.save();
+    return await member.save().then((m) => m.populate("position"));
   }
 
   /**
