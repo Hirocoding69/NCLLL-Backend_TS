@@ -17,7 +17,7 @@ export class ResourceService {
       throw notFound("Source ministry not found");
     }
 
-    return await ResourceModel.create({
+    const resource =  await ResourceModel.create({
       title: payload.title,
       lang: payload.lang,
       cover: payload.cover,
@@ -28,6 +28,7 @@ export class ResourceService {
       created_at: new Date(),
       updated_at: new Date()
     });
+    return await resource.populate('source');
   }
 
   async getResources(queryDto: ResourceQueryDto) {
@@ -127,7 +128,7 @@ export class ResourceService {
       updated_at: new Date()
     });
 
-    return await resource.save();
+    return await resource.save().then(r => r.populate('source'));
   }
 
   /**
