@@ -41,6 +41,37 @@ export class MemberService {
     return await query.sort({ 'created_at': -1 }).exec();
   }
 
+
+  /**
+   * Get all active members with only mandatory key & groups key
+   * @returns Array of members
+   */
+  async getAllGroupedMembers() {
+    const query = MemberModel.aggregate([
+      { $match: { deleted_at: null } },
+      {
+        $group: {
+          _id: "$position",
+          members: {
+            $push: {
+              _id: "$_id",
+              name_en: "$en.name",
+              name_kh: "$kh.name",
+              imageUrl_en: "$en.imageUrl",
+              imageUrl_kh: "$kh.imageUrl",
+            }
+          }
+        }
+      },
+      { $lookup: { from: "positions", localField: "_id", foreignField: "_id", as: "position" } },
+      { $unwind: { path: "$position" } },
+      { $sort: { "position.en.level": 1 } },
+    ]);
+
+    return await query;
+  }
+
+
   /**
    * Get a member by ID
    * @param id Member ID
