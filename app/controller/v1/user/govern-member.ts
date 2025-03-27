@@ -10,6 +10,14 @@ export class MemberController {
     /**
      * Get all members
      */
+    async getAllGroupedMembers(req: Request, res: Response) {
+        const members = await this.memberService.getAllGroupedMembers();
+        return res.send(ok(members));
+    }
+
+    /**
+     * Get all members
+     */
     async getAll(req: Request, res: Response) {
         const populate = req.query.populate !== 'false';
         const members = await this.memberService.getAllMembers(populate);
