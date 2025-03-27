@@ -1,5 +1,9 @@
-import { IsMongoId, IsNotEmpty, IsObject, IsOptional, IsString, ValidateNested } from "class-validator";
+import { ArrayMinSize, IsArray, IsBoolean, IsMongoId, IsNotEmpty, IsObject, IsOptional, IsString, ValidateNested, isMongoId } from "class-validator";
 import { Type } from "class-transformer";
+import { Admin } from "../entity/admin";
+import { Mongoose } from "mongoose";
+import { ContentStatus } from "aws-sdk/clients/wisdom";
+import { BasePaginationQuery } from "./base";
 
 /* ------------------------------------------------------ */
 /*                    Nested Classes                      */
@@ -42,21 +46,31 @@ export class CreateContentPayload {
   @Type(() => ContentInfoDto)
   kh?: ContentInfoDto;
   
-  @IsString()
-  @IsOptional()
-  parentId?: string;
+  @IsArray()
+  @IsMongoId({ each: true })
+  @ArrayMinSize(1)
+  @IsNotEmpty()
+  tags: string[];
   
   @IsString()
   @IsOptional()
   category?: string;
+  auth: Admin;
 }
 
 export class EditContentPayload extends CreateContentPayload {
   @IsMongoId()
   id: string;
+  @IsString()
+  @IsOptional()
+  category?: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  status?: ContentStatus;
 }
 
-export class GetContentQueryParams {
+export class GetContentQueryParams extends BasePaginationQuery {
   @IsString()
   @IsOptional()
   category?: string;
@@ -64,4 +78,26 @@ export class GetContentQueryParams {
   @IsMongoId()
   @IsOptional()
   parentId?: string;
+  
+  @IsString()
+  @IsOptional()
+  search?: string;
+
+  @IsString()
+  @IsOptional()
+  status?: ContentStatus;
+
+  @IsBoolean()
+  @IsOptional()
+  includeDeleted?: boolean;
+
+  @IsMongoId()
+  @IsOptional()
+  tag: string;
+
+  @IsString()
+  @IsOptional()
+  year: string;
+  
+
 }

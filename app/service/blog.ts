@@ -2,6 +2,8 @@ import { Types } from 'mongoose';
 import { notFound } from "~/common/response";
 import { CreateContentPayload, EditContentPayload, GetContentQueryParams } from '../dto/blog';
 import { ContentModel } from '../entity/blog';
+import { ContentStatus } from '~/common/constant/content-status-enum';
+import { MongoPaginationOptions, mongoPaginate } from '~/common/utils/pagination';
 
 export class ContentService {
     /**
@@ -10,9 +12,9 @@ export class ContentService {
      * @returns Newly created content
      */
     async createContent(payload: CreateContentPayload) {
-        // Convert parentId string to ObjectId if provided
-        const parentId = payload.parentId ? new Types.ObjectId(payload.parentId) : null;
         const content: any = {
+            ...payload,
+            createdBy: payload.auth.name
         };
         if (payload.en) {
             content.en = {
@@ -31,28 +33,68 @@ export class ContentService {
         return await ContentModel.create(content);
     }
 
-    /**
-     * Get all active content items, with optional filtering
-     * @param params Optional query parameters for filtering
-     * @returns Array of content items
-     */
-    async getAllContent(params?: GetContentQueryParams) {
-        const query: any = { deleted_at: null };
+   /**
+ * Get all active content items, with optional filtering
+ * @param params Optional query parameters for filtering
+ * @returns Paginated array of content items
+ */
+async getAllContent(params?: GetContentQueryParams) {
+    const {
+        page = 1,
+        limit = 10,
+        category,
+        status,
+        tag,
+        year,
+        search,
+        sortBy = 'created_at',
+        sortOrder = 'desc',
+        includeDeleted = false
+    } = params || {};
 
-        // Add category filter if provided
-        if (params?.category) {
-            query.category = params.category;
-        }
-
-        // Add parent filter if provided
-        if (params?.parentId) {
-            query.parentId = new Types.ObjectId(params.parentId);
-        }
-
-        return await ContentModel.find(query)
-            .sort({ 'created_at': -1 })
-            .exec();
+    const filter: any = {};
+    
+    if (!includeDeleted) {
+        filter.deleted_at = null;
     }
+    
+    if (category) filter.category = category;
+    if (status) filter.status = status;
+    
+    if (tag) {
+        filter.tags = { $in: [new Types.ObjectId(tag)] };
+    }
+    
+    if (search) {
+        filter.$or = [
+            { 'en.title': { $regex: search, $options: 'i' } },
+            { 'kh.title': { $regex: search, $options: 'i' } }
+        ];
+    }
+    
+    if (year) {
+        const startDate = new Date(Number(year), 0, 1);
+        const endDate = new Date(Number(year), 11, 31, 23, 59, 59, 999);
+        filter.created_at = {
+            $gte: startDate,
+            $lte: endDate
+        };
+    }
+    
+    const order_by = `${sortBy} ${sortOrder.toUpperCase()}`;
+    const allowed_order = ['created_at', 'updated_at', 'title', 'category', 'status'];
+    
+    const paginationOptions: MongoPaginationOptions = {
+        page,
+        limit,
+        order_by,
+        allowed_order,
+        filter,
+        select: '-en.document -kh.document'
+    };
+    
+    return await mongoPaginate(ContentModel, paginationOptions);
+}
 
     /**
      * Get content by ID
@@ -97,17 +139,21 @@ export class ContentService {
             throw notFound("Content not found");
         }
 
-        // Convert parentId string to ObjectId if provided
-        if (updateData.parentId) {
-            content.parentId = new Types.ObjectId(updateData.parentId);
-        }
-
-        // Update category if provided
         if (updateData.category !== undefined) {
             content.category = updateData.category;
         }
 
-        // Update English content info
+        if(updateData.tags){
+            content.tags = updateData.tags.map(tagId => new Types.ObjectId(tagId));
+        }
+
+        if(updateData.status) {
+            if(updateData.status) {
+                content.status = updateData.status as ContentStatus;
+            }
+        }
+
+
         if (updateData.en) {
             content.en = {
                 title: updateData.en.title || content.en!.title,
@@ -116,7 +162,6 @@ export class ContentService {
             };
         }
 
-        // Update Khmer content info
         if (updateData.kh) {
             content.kh = {
                 title: updateData.kh.title || content.kh!.title,

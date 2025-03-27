@@ -2,8 +2,9 @@ import { Request, Response, NextFunction } from "express";
 import * as jwt from "jsonwebtoken";
 import { unauthorized } from "response";
 import { IsNull, MoreThan } from "typeorm";
+import { AdminModel } from "~/app/entity/admin";
 
-export function authMiddleware(type: "app" | "admin") {
+export function authMiddleware() {
   return async function (req: Request, res: Response, next: NextFunction) {
     if (shouldSkip(req.originalUrl)) {
       return next();
@@ -23,6 +24,11 @@ export function authMiddleware(type: "app" | "admin") {
     } catch (e: any) {
       throw unauthorized();
     }
+    const admin = await AdminModel.findById(payload.userId);
+    if (!admin) {
+      throw unauthorized();
+    }
+    req.admin = admin;
     next();
   };
 }

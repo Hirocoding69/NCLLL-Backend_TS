@@ -15,10 +15,11 @@ export class ContentController {
    * Create a new content entry
    */
   async create(req: Request, res: Response) {
-    const payload = plainToClass(CreateContentPayload, req.body);
+    const payload = plainToClass(CreateContentPayload, { ...req.body, auth: req.admin });
     if(!payload.en && !payload.kh) {
         throw unprocessableEntity('Either English or Khmer content is required');
     }
+
     const content = await this.contentService.createContent(payload);
     return res.json(ok(content));
   }

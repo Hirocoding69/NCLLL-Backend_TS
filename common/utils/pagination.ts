@@ -87,6 +87,7 @@ export interface MongoPaginationOptions {
   allowed_order?: string[];
   filter?: Record<string, any>;
   populate?: any; 
+  select?: string | Record<string, number | boolean | object>;
 }
 
 export interface PaginationMeta {
@@ -112,6 +113,7 @@ export async function mongoPaginate<T>(
     allowed_order = ["_id", "created_at"],
     filter = {},
     populate,
+    select
   } = options;
   const offset = (page - 1) * limit;
   
@@ -134,7 +136,9 @@ export async function mongoPaginate<T>(
   if (populate) {
     query = query.populate(populate as any);
   }
-  
+  if (select) {
+    query = query.select(select);
+  }
   // Execute query and count in parallel
   const [results, totalCount] = await Promise.all([
     query.exec(),
