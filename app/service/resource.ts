@@ -55,8 +55,7 @@ export class ResourceService {
     } = params;
   
     // Common match conditions
-    const searchTerm = search || keyword || '';
-    
+    const searchTerm = keyword || '';
     // Convert string ids to ObjectId
     const tagId = tag ? new Types.ObjectId(tag) : null;
     const sourceId = source ? new Types.ObjectId(source) : null;
@@ -65,15 +64,15 @@ export class ResourceService {
     const contentPipeline = [
       {
         $match: {
+          status: 'published',
           ...(includeDeleted ? {} : { deleted_at: null }),
           ...(category ? { category } : {}),
-          ...(status ? { status } : {}),
           ...(tagId ? { tags: { $in: [tagId] } } : {}),
           ...(sourceId ? { source: sourceId } : {}),
-          ...(search ? {
+          ...(searchTerm ? {
             $or: [
-              { 'en.title': { $regex: search, $options: 'i' } },
-              { 'kh.title': { $regex: search, $options: 'i' } }
+              { 'en.title': { $regex: searchTerm, $options: 'i' } },
+              { 'kh.title': { $regex: searchTerm, $options: 'i' } }
             ]
           } : {}),
           ...(year ? {
@@ -89,7 +88,7 @@ export class ResourceService {
           from: 'tags',
           localField: 'tags',
           foreignField: '_id',
-          as: 'tagObjects'
+          as: 'tags'
         }
       },
       {
