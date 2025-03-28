@@ -11,6 +11,7 @@ import UploadRoutes from "./file";
 import ResoureceRoutes from "./resource";
 import BlogRoutes from "./blog";
 import PartnerRoutes from "./partner";
+import FocusAreaRoutes from "./focus-area";
 const router = express.Router();
 
 router
@@ -24,7 +25,8 @@ router
   .use("/upload",UploadRoutes)
   .use("/resource",ResoureceRoutes)
   .use("/blog", BlogRoutes)
-  .use("/partner", PartnerRoutes);
+  .use("/partner", PartnerRoutes)
+  .use("/focus-area", FocusAreaRoutes);
 
  
 export default router;

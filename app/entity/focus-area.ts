@@ -1,20 +1,17 @@
 /* ------------------------------------------------------ */
 /*                    Content Entity                      */
 
-import { index, prop } from "@typegoose/typegoose";
+import { getModelForClass, index, prop } from "@typegoose/typegoose";
 import { ContentInfo } from "./blog";
 
 /* ------------------------------------------------------ */
 @index({ 'en.title': 'text', 'kh.title': 'text' })
-export class Content {
+export class FocusArea {
   @prop({ type: () => ContentInfo })
   en?: ContentInfo;
 
   @prop({ type: () => ContentInfo })
-  kh?: ContentInfo;
-
-  @prop()
-  category?: string;
+  kh?: ContentInfo
 
   @prop({ required: true })
   cover: string;
@@ -28,3 +25,4 @@ export class Content {
   @prop({ default: null })
   deleted_at: Date | null;
 }
+export const FocusAreaModel = getModelForClass(FocusArea);

@@ -9,7 +9,8 @@ import MinistryRoutes from './ministry';
 import ResourceRoutes from './resource';
 import BlogRoutes from './blog';
 import RequestPartnersRoutes from './request-partners';
-import PartnerRoutes from './partner';
+import PartnerRoutes from './partner'
+import FocusAreaRoute from './focus-area';
 
 router
     .use('/govern-members', GavormentRoutes)
@@ -20,6 +21,7 @@ router
     .use('/blogs', BlogRoutes)
     .use('/request-partner', RequestPartnersRoutes)
     .use('/resources', ResourceRoutes)
-    .use('/partners', PartnerRoutes);
+    .use('/partners', PartnerRoutes)
+    .use('/focus-areas', FocusAreaRoute)
 
 export default router;
