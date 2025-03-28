@@ -6,5 +6,6 @@ const router = express.Router();
 const ctrl = bindCtx(new RequestPartnerController());
 
 router.post("/", ctrl.create);
+router.get("/", ctrl.getAll);
 
 export default router;

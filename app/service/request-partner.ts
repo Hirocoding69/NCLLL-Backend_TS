@@ -18,4 +18,12 @@ export class RequestPartnerService {
       updated_at: new Date()
     });
   }
+  /**
+   * Get all partners
+   * @returns All partners
+   * 
+   */
+  async getAll() {
+    return await RequestPartnersModel.find();
+  }
 }

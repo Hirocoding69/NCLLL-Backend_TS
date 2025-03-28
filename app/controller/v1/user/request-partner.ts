@@ -9,5 +9,9 @@ export class RequestPartnerController {
     const rsp = await this.services.create(req.body);
     return res.send(ok(rsp));
   }
+  async getAll(req: Request, res: Response) {
+    const rsp = await this.services.getAll();
+    return res.send(ok(rsp));
+  }
 
 }
