@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
-import { plainToInstance } from "class-transformer";
 import { MinistryService } from "~/app/service/ministry";
-import { ok, notFound, unprocessableEntity } from "~/common/response";
-import { CreateMinistryPayload, EditMinistryPayload } from "~/app/dto/ministry";
+import { ok } from "~/common/response";
 
 export class MinistryController {
   private ministryService = new MinistryService();
