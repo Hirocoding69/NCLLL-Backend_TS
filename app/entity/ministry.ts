@@ -18,6 +18,9 @@ export class Ministry {
   @prop({ required: true, type: () => MinistryInfo }) 
   kh: MinistryInfo;
   
+  @prop()
+  deleted_at: Date;
+
   @prop() 
   created_at: Date;
   

@@ -39,6 +39,10 @@ export class MemberInfo {
 class Member {
   @prop({ required: true, type: () => MemberInfo }) en: MemberInfo;
   @prop({ required: true, type: () => MemberInfo }) kh: MemberInfo;
+  @prop() deleted_at: Date;
+  @prop() created_at: Date;
+  @prop() updated_at: Date;
+  @prop({required: true, ref: ()=>Member}) parent: Ref<Member>;
   @prop({ required: true, ref: () => Position }) position: Ref<Position>;
 }
 

@@ -18,6 +18,7 @@ export class MemberService {
     const member = await MemberModel.create({
       en: payload.en,
       kh: payload.kh,
+      parent: payload.parent,
       position: payload.position,
       created_at: new Date(),
       updated_at: new Date()
@@ -35,7 +36,7 @@ export class MemberService {
     const query = MemberModel.find({ deleted_at: null });
 
     if (populate) {
-      query.populate('position');
+      query.populate(['position', 'parent']);
     }
 
     return await query.sort({ 'created_at': -1 }).exec();

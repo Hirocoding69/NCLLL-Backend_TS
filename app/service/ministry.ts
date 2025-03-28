@@ -106,7 +106,12 @@ export class MinistryService {
       throw notFound("Invalid ministry ID format");
     }
 
-    const result = await MinistryModel.findOneAndDelete({ _id: id });
+    const result = await MinistryModel.findOne({ _id: id });
+    if (!result) {
+      throw notFound("message.ministry_not_found");
+    }
+    result.deleted_at = new Date();
+    await result.save();
     
     if (!result) {
       throw notFound("Ministry not found");

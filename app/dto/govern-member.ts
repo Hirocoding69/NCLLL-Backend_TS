@@ -91,6 +91,10 @@ export class CreateMemberPayload {
 
   @IsMongoId()
   @IsNotEmpty()
+  parent: string;
+
+  @IsMongoId()
+  @IsNotEmpty()
   position: string;
 }
 
