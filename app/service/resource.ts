@@ -162,7 +162,7 @@ export class ResourceService {
       },
       {
         $lookup: {
-          from: 'sources', // Adjust collection name if needed
+          from: 'ministries',
           localField: 'source',
           foreignField: '_id',
           as: 'sourceArray'
@@ -198,7 +198,7 @@ export class ResourceService {
           created_at: 1,
           updated_at: 1,
           contentType: { $literal: "resource" },
-          originalItem: "$clean" // Store the clean version as originalItem
+          originalItem: "$clean" 
         }
       }
     ];
