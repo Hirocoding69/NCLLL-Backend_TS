@@ -90,6 +90,10 @@ async getAllContent(params?: GetContentQueryParams) {
         order_by,
         allowed_order,
         filter,
+        populate: {
+            path: 'tags',
+            model: 'Tag'
+        },
         select: '-en.document -kh.document'
     };
     
