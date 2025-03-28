@@ -28,7 +28,6 @@ export class ContentController {
    * Get all content entries with optional filtering
    */
   async getAll(req: Request, res: Response) {
-    req.query.status = "approved";
     const params = plainToInstance(GetContentQueryParams, req.query);
     const contents = await this.contentService.getAllContent(params);
     return res.json(ok(contents));

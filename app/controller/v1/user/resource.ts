@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { plainToInstance } from "class-transformer";
 import { ResourceService } from "~/app/service/resource";
 import { ok } from "~/common/response";
-import { ResourceQueryDto } from "~/app/dto/resource";
+import { CombinedQueryDto, ResourceQueryDto } from "~/app/dto/resource";
 
 export class ResourceController {
   private resourceService = new ResourceService();
@@ -19,5 +19,10 @@ export class ResourceController {
     const id = req.params.id;
     const resource = await this.resourceService.getResourceById(id);
     return res.send(ok(resource));
+  }
+  async getAll(req: Request, res: Response) {
+    const payload = plainToInstance(CombinedQueryDto, req.query);
+    const resources = await this.resourceService.getCombinedItems(payload);
+    return res.send(ok(resources));
   }
 }

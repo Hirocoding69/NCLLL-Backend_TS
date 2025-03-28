@@ -3,6 +3,7 @@ import { Types } from 'mongoose';
 import { Admin } from './admin';
 import { IsEnum } from 'class-validator';
 import { ContentStatus } from '~/common/constant/content-status-enum';
+import { Ministry } from './ministry';
 
 /* ------------------------------------------------------ */
 /*                    TipTap Document                     */
@@ -48,6 +49,12 @@ export class Content {
     required: true
   })
   tags: Types.ObjectId[];
+
+  @prop({ required: true })
+  cover: string;
+
+  @prop( { required: true,ref: ()=>Ministry})
+  source: Ref<Ministry>;
 
   @prop({ default: Date.now })
   created_at: Date;

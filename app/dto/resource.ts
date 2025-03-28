@@ -64,3 +64,43 @@ export class ResourceQueryDto extends BasePaginationQuery {
   @IsOptional()
   keyword?: string;
 }
+
+
+/**
+ * Interface for combined query parameters
+ */
+export class CombinedQueryDto {
+  page?: number;
+  limit?: number;
+  year?: number;
+  search?: string;
+  keyword?: string; // Used for resources
+  category?: string;
+  type?: string;
+  tag?: string;
+  lang?: string;
+  source?: string;
+  status?: string;
+  sortBy?: string;
+  sortOrder?: string;
+  includeDeleted?: boolean;
+}
+
+/**
+ * Interface for combined content item
+ */
+export interface CombinedItem {
+  _id: string;
+  title: string;
+  description?: string;
+  thumbnailUrl?: string;
+  contentType: 'content' | 'resource'; // Discriminator field
+  category?: string;
+  type?: string;
+  tags?: any[];
+  source?: any;
+  publishedAt?: Date;
+  created_at: Date;
+  updated_at?: Date;
+  originalItem: any; // Reference to the original item
+}

@@ -33,72 +33,76 @@ export class ContentService {
         return await ContentModel.create(content);
     }
 
-   /**
- * Get all active content items, with optional filtering
- * @param params Optional query parameters for filtering
- * @returns Paginated array of content items
- */
-async getAllContent(params?: GetContentQueryParams) {
-    const {
-        page = 1,
-        limit = 10,
-        category,
-        status,
-        tag,
-        year,
-        search,
-        sortBy = 'created_at',
-        sortOrder = 'desc',
-        includeDeleted = false
-    } = params || {};
+    /**
+  * Get all active content items, with optional filtering
+  * @param params Optional query parameters for filtering
+  * @returns Paginated array of content items
+  */
+    async getAllContent(params?: GetContentQueryParams) {
+        const {
+            page = 1,
+            limit = 10,
+            category,
+            status,
+            tag,
+            year,
+            search,
+            sortBy = 'created_at',
+            sortOrder = 'desc',
+            includeDeleted = false
+        } = params || {};
 
-    const filter: any = {};
-    
-    if (!includeDeleted) {
-        filter.deleted_at = null;
-    }
-    
-    if (category) filter.category = category;
-    if (status) filter.status = status;
-    
-    if (tag) {
-        filter.tags = { $in: [new Types.ObjectId(tag)] };
-    }
-    
-    if (search) {
-        filter.$or = [
-            { 'en.title': { $regex: search, $options: 'i' } },
-            { 'kh.title': { $regex: search, $options: 'i' } }
-        ];
-    }
-    
-    if (year) {
-        const startDate = new Date(Number(year), 0, 1);
-        const endDate = new Date(Number(year), 11, 31, 23, 59, 59, 999);
-        filter.created_at = {
-            $gte: startDate,
-            $lte: endDate
+        const filter: any = {};
+
+        if (!includeDeleted) {
+            filter.deleted_at = null;
+        }
+
+        if (category) filter.category = category;
+        if (status) filter.status = status;
+
+        if (tag) {
+            filter.tags = { $in: [new Types.ObjectId(tag)] };
+        }
+
+        if (search) {
+            filter.$or = [
+                { 'en.title': { $regex: search, $options: 'i' } },
+                { 'kh.title': { $regex: search, $options: 'i' } }
+            ];
+        }
+
+        if (year) {
+            const startDate = new Date(Number(year), 0, 1);
+            const endDate = new Date(Number(year), 11, 31, 23, 59, 59, 999);
+            filter.created_at = {
+                $gte: startDate,
+                $lte: endDate
+            };
+        }
+
+        const order_by = `${sortBy} ${sortOrder.toUpperCase()}`;
+        const allowed_order = ['created_at', 'updated_at', 'title', 'category', 'status'];
+
+        const paginationOptions: MongoPaginationOptions = {
+            page,
+            limit,
+            order_by,
+            allowed_order,
+            filter,
+            populate: [{
+                path: 'tags',
+                model: 'Tag'
+            },
+            {
+                path: 'source',
+                model: 'Ministry'
+            }],
+            select: '-en.document -kh.document'
         };
+
+        return await mongoPaginate(ContentModel, paginationOptions);
     }
-    
-    const order_by = `${sortBy} ${sortOrder.toUpperCase()}`;
-    const allowed_order = ['created_at', 'updated_at', 'title', 'category', 'status'];
-    
-    const paginationOptions: MongoPaginationOptions = {
-        page,
-        limit,
-        order_by,
-        allowed_order,
-        filter,
-        populate: {
-            path: 'tags',
-            model: 'Tag'
-        },
-        select: '-en.document -kh.document'
-    };
-    
-    return await mongoPaginate(ContentModel, paginationOptions);
-}
 
     /**
      * Get content by ID
@@ -147,12 +151,12 @@ async getAllContent(params?: GetContentQueryParams) {
             content.category = updateData.category;
         }
 
-        if(updateData.tags){
+        if (updateData.tags) {
             content.tags = updateData.tags.map(tagId => new Types.ObjectId(tagId));
         }
 
-        if(updateData.status) {
-            if(updateData.status) {
+        if (updateData.status) {
+            if (updateData.status) {
                 content.status = updateData.status as ContentStatus;
             }
         }

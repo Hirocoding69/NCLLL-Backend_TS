@@ -51,6 +51,14 @@ export class CreateContentPayload {
   @ArrayMinSize(1)
   @IsNotEmpty()
   tags: string[];
+
+  @IsMongoId()
+  @IsString()
+  source: string;
+
+  @IsString()
+  @IsOptional()
+  cover: string;
   
   @IsString()
   @IsOptional()

@@ -7,7 +7,8 @@ import {ResourceQueryDto } from "~/app/dto/resource";
 const router = express.Router();
 const ctrl = bindCtx(new ResourceController());
 
-router.get("/",vquery(ResourceQueryDto),ctrl.getResources);
+router.get("/",vquery(ResourceQueryDto),ctrl.getAll);
 router.get("/:id", ctrl.getById);
+
 
 export default router;
