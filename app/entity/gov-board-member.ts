@@ -36,7 +36,7 @@ export class MemberInfo {
   @prop({ type: () => [CareerDetail] }) experience: CareerDetail[];
 }
 
-class Member {
+export class Member {
   @prop({ required: true, type: () => MemberInfo }) en: MemberInfo;
   @prop({ required: true, type: () => MemberInfo }) kh: MemberInfo;
   @prop() deleted_at: Date;

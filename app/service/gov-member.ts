@@ -1,7 +1,8 @@
 import { Types } from 'mongoose';
 import { notFound } from "~/common/response";
-import { MemberInfo, MemberModel, PositionModel } from "../entity/gov-board-member";
+import { Member, MemberInfo, MemberModel, PositionModel } from "../entity/gov-board-member";
 import { CreateMemberPayload, EditMemberPayload } from '../dto/govern-member';
+import { Ref } from '@typegoose/typegoose';
 
 export class MemberService {
   /**
@@ -90,7 +91,7 @@ export class MemberService {
     });
 
     if (populate) {
-      query.populate('position');
+      query.populate(['position', 'parent']);
     }
 
     const member = await query.exec();
@@ -132,6 +133,11 @@ export class MemberService {
       }
       member.position = position as any;
     }
+    const parent = await MemberModel.findOne({ _id: updateData.parent });
+    if (!parent) {
+      throw notFound("Parent not found");
+    }
+    member.parent = new Types.ObjectId(updateData.parent) as unknown as Ref<Member>;;
 
     // Update member info
     if (updateData.en) {
@@ -148,7 +154,7 @@ export class MemberService {
       };
     }
 
-    return await member.save().then((m) => m.populate("position"));
+    return await member.save().then((m) => m.populate(['position', 'parent']));
   }
 
   /**
