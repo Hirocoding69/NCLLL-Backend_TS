@@ -58,7 +58,9 @@ export class ContentService {
             filter.deleted_at = null;
         }
 
-        if (category) filter.category = category;
+        if (category?.length) {
+            filter.category = { $in: category };
+        }
         if (status) filter.status = status;
 
         if (tag) {

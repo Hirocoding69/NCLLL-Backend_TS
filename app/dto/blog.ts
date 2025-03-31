@@ -79,9 +79,10 @@ export class EditContentPayload extends CreateContentPayload {
 }
 
 export class GetContentQueryParams extends BasePaginationQuery {
-  @IsString()
   @IsOptional()
-  category?: string;
+  @IsArray()
+  @IsString({ each: true })
+  category?: string[];
   
   @IsMongoId()
   @IsOptional()

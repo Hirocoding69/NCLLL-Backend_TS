@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { notFound } from "~/common/response";
+import { notFound, unprocessableEntity } from "~/common/response";
 import { PartnerModel } from "../entity/partner";
 import { CreatePartnerPayload, EditPartnerPayload, PartnerQueryDto } from '../dto/partner';
 import { MongoPaginationOptions, mongoPaginate } from '~/common/utils/pagination';
@@ -11,6 +11,15 @@ export class PartnerService {
    * @returns Newly created partner
    */
   async createPartner(payload: CreatePartnerPayload) {
+    const exisitingPartner = await PartnerModel.findOne({
+      $or: [
+        { en: { name: payload.en?.name } },
+        { kh: { name: payload.kh?.name } }
+      ]
+    });
+    if (exisitingPartner) {
+      throw unprocessableEntity("message.partner_name_exists");
+    }
     return await PartnerModel.create({
       en: payload.en,
       kh: payload.kh,
@@ -27,10 +36,10 @@ export class PartnerService {
    * @returns Paginated partners and metadata
    */
   async getPartners(queryDto: PartnerQueryDto) {
-    const { 
-      page = 1, 
-      limit = 10, 
-      lang, 
+    const {
+      page = 1,
+      limit = 10,
+      lang,
       search,
       sortBy = 'created_at',
       sortOrder = 'desc'
@@ -40,7 +49,7 @@ export class PartnerService {
     const filter: any = {
       deleted_at: null
     };
-    
+
     // Language filter
     if (lang) {
       if (lang === 'en') {
@@ -49,7 +58,7 @@ export class PartnerService {
         filter.kh = { $exists: true };
       }
     }
-    
+
     // Text search
     if (search) {
       filter.$text = { $search: search };
@@ -84,15 +93,15 @@ export class PartnerService {
       throw notFound("Invalid partner ID format");
     }
 
-    const partner = await PartnerModel.findOne({ 
-      _id: id, 
-      deleted_at: null 
+    const partner = await PartnerModel.findOne({
+      _id: id,
+      deleted_at: null
     });
-    
+
     if (!partner) {
       throw notFound("Partner not found");
     }
-    
+
     return partner;
   }
 
@@ -103,16 +112,16 @@ export class PartnerService {
    */
   async updatePartner(payload: EditPartnerPayload) {
     const { id, ...updateData } = payload;
-    
+
     if (!Types.ObjectId.isValid(id)) {
       throw notFound("Invalid partner ID format");
     }
 
-    const partner = await PartnerModel.findOne({ 
-      _id: id, 
-      deleted_at: null 
+    const partner = await PartnerModel.findOne({
+      _id: id,
+      deleted_at: null
     });
-    
+
     if (!partner) {
       throw notFound("Partner not found");
     }
@@ -124,7 +133,7 @@ export class PartnerService {
         ...updateData.en
       };
     }
-    
+
     if (updateData.kh) {
       partner.kh = {
         ...(partner.kh as any),
@@ -137,7 +146,7 @@ export class PartnerService {
     if (updateData.logo) partner.logo = updateData.logo;
 
     partner.updated_at = new Date();
-    
+
     return await partner.save();
   }
 
@@ -151,18 +160,18 @@ export class PartnerService {
       throw notFound("Invalid partner ID format");
     }
 
-    const partner = await PartnerModel.findOne({ 
-      _id: id, 
-      deleted_at: null 
+    const partner = await PartnerModel.findOne({
+      _id: id,
+      deleted_at: null
     });
-    
+
     if (!partner) {
       throw notFound("Partner not found");
     }
-    
+
     partner.deleted_at = new Date();
     partner.updated_at = new Date();
-    
+
     return await partner.save();
   }
 
@@ -177,11 +186,11 @@ export class PartnerService {
     }
 
     const result = await PartnerModel.findByIdAndDelete(id);
-    
+
     if (!result) {
       throw notFound("Partner not found");
     }
-    
+
     return result;
   }
 }

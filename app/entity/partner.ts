@@ -18,8 +18,6 @@ export class PartnerInfo {
 /*                    Partner Entity                      */
 /* ------------------------------------------------------ */
 @index({ 'en.name': 'text', 'kh.name': 'text' })
-@index({ 'en.name': 1 }, { unique: true })
-@index({ 'kh.name': 1 }, { unique: true })
 export class CollabPartner {
   @prop({ type: () => PartnerInfo })
   en?: PartnerInfo;
