@@ -12,6 +12,7 @@ import ResoureceRoutes from "./resource";
 import BlogRoutes from "./blog";
 import PartnerRoutes from "./partner";
 import FocusAreaRoutes from "./focus-area";
+import ModuleRoutes from "./module";
 const router = express.Router();
 
 router
@@ -22,11 +23,12 @@ router
   .use("/banner", BannerRoutes)
   .use("/tag", TagRoutes)
   .use("/ministry", MinistryRoutes)
-  .use("/upload",UploadRoutes)
-  .use("/resource",ResoureceRoutes)
+  .use("/upload", UploadRoutes)
+  .use("/resource", ResoureceRoutes)
   .use("/blog", BlogRoutes)
   .use("/partner", PartnerRoutes)
-  .use("/focus-area", FocusAreaRoutes);
+  .use("/focus-area", FocusAreaRoutes)
+  .use("/modules", ModuleRoutes);
 
- 
+
 export default router;
