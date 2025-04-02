@@ -43,7 +43,6 @@ export class ModuleService {
             deleted_at: null
         };
 
-        if (filter.subCategory != '') filter.mainCategory = "";
         if (mainCategory) filter.mainCategory = mainCategory;
         filter.subCategory = subCategory;
 
