@@ -43,8 +43,9 @@ export class ModuleService {
             deleted_at: null
         };
 
+        if (filter.subCategory != '') filter.mainCategory = "";
         if (mainCategory) filter.mainCategory = mainCategory;
-        if (subCategory) filter.subCategory = subCategory;
+        filter.subCategory = subCategory;
 
         if (lang) {
             if (lang === 'en') {
