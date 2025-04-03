@@ -197,7 +197,51 @@ export async function maybeReleaseLock(lockKey: string, lockValue: string) {
 export function getRedisClient() {
   return redis;
 }
+/**
+ * Gets a value from Redis cache. If the value doesn't exist, it will use the fallback function
+ * to retrieve the data, then cache it before returning.
+ * 
+ * @param key - The Redis key to retrieve
+ * @param fallbackFn - Function to call if cache miss occurs
+ * @param cacheDuration - How long (in seconds) to cache the result
+ * @param jsonParse - Whether to parse the cached value as JSON (default: true)
+ * @param jsonStringify - Whether to stringify the fallback result before caching (default: true)
+ * @returns The cached value or the result of the fallback function
+ */
+async function getWithFallback<T>(
+  key: string,
+  fallbackFn: () => Promise<T>,
+  cacheDuration: number,
+  jsonParse: boolean = true,
+  jsonStringify: boolean = true
+): Promise<T> {
+  if (!redis) {
+    throw new Error("Redis client is not initialized. Call initialize() first.");
+  }
 
+  try {
+    // Attempt to get the value from cache
+    const cachedValue = await redis.get(key);
+
+    // If we found a value in the cache, return it
+    if (cachedValue !== null) {
+      return jsonParse ? JSON.parse(cachedValue) : (cachedValue as unknown as T);
+    }
+
+    // Cache miss - execute the fallback function
+    const result = await fallbackFn();
+
+    // Store the result in cache
+    const valueToCache = jsonStringify ? JSON.stringify(result) : String(result);
+    await redis.set(key, valueToCache, "EX", cacheDuration);
+
+    return result;
+  } catch (error) {
+    console.error(`Cache error for key "${key}":`, error);
+    // If there's any Redis error, fall back to the function
+    return fallbackFn();
+  }
+}
 export default {
   initialize,
   get,
@@ -212,4 +256,5 @@ export default {
   renewLock,
   maybeReleaseLock,
   getRedisClient,
+  getWithFallback
 };
