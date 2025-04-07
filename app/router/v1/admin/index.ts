@@ -13,9 +13,11 @@ import BlogRoutes from "./blog";
 import PartnerRoutes from "./partner";
 import FocusAreaRoutes from "./focus-area";
 import ModuleRoutes from "./module";
+import WebsiteSettingsRoutes from "./website-settings";
 const router = express.Router();
 
 router
+  .use("/settings", WebsiteSettingsRoutes)
   .use("/auth", AuthRoutes)
   .use("/position", Position)
   .use("/member", MemberRoutes)
