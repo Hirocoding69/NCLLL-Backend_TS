@@ -12,13 +12,14 @@ import RequestPartnersRoutes from './request-partners';
 import PartnerRoutes from './partner'
 import FocusAreaRoute from './focus-area'
 import ModuleRoute from './module';
+import WebsiteSettingsRoutes from "./website-settings";
 
 router
+    .use('/settings', WebsiteSettingsRoutes)
     .use('/govern-members', GavormentRoutes)
     .use('/ministries', MinistryRoutes)
     .use('/tags', TagRoutes)
     .use('/banners', BannerRoutes)
-    .use('/resources', ResourceRoutes)
     .use('/blogs', BlogRoutes)
     .use('/request-partner', RequestPartnersRoutes)
     .use('/resources', ResourceRoutes)

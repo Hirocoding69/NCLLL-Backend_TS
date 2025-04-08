@@ -107,13 +107,11 @@ export class ResourceService {
             en: {
               title: "$en.title",
               description: "$en.description",
-              thumbnailUrl: "$en.thumbnailUrl"
               // Explicitly omitting document
             },
             kh: {
               title: "$kh.title",
               description: "$kh.description",
-              thumbnailUrl: "$kh.thumbnailUrl"
               // Explicitly omitting document
             },
             category: "$category",
@@ -123,6 +121,7 @@ export class ResourceService {
             created_at: "$created_at",
             updated_at: "$updated_at",
             status: "$status",
+            cover: "$cover"
             // Include any other fields you need
           }
         }
